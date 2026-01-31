@@ -152,4 +152,28 @@ export const CreatorNFTABI = [
     name: "TransferFailed",
     inputs: [],
   },
+  {
+    type: "function",
+    name: "withdraw",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "ownerOf",
+    inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "event",
+    name: "Transfer",
+    inputs: [
+      { name: "from", type: "address", indexed: true, internalType: "address" },
+      { name: "to", type: "address", indexed: true, internalType: "address" },
+      { name: "tokenId", type: "uint256", indexed: true, internalType: "uint256" },
+    ],
+    anonymous: false,
+  },
 ] as const;
