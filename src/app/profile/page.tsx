@@ -19,9 +19,23 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"public" | "exclusive">("public");
 
-  // Mock earnings data
-  const mockEarnings = 150;
-  const mockViews = 12500;
+  // Generate consistent random views based on wallet address
+  const generateViewsFromAddress = (addr: string | undefined): number => {
+    if (!addr) return Math.floor(Math.random() * 10000) + 1000;
+
+    // Simple hash function to convert wallet address to a seed
+    let hash = 0;
+    for (let i = 0; i < addr.length; i++) {
+      hash = ((hash << 5) - hash) + addr.charCodeAt(i);
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+
+    // Use hash to generate a consistent random number between 1000 and 50000
+    const absHash = Math.abs(hash);
+    return (absHash % 49000) + 1000;
+  };
+
+  const mockViews = generateViewsFromAddress(address);
 
   useEffect(() => {
     if (address) {
@@ -120,13 +134,6 @@ export default function ProfilePage() {
               <p className="text-white font-bold text-xl">{mockViews.toLocaleString()}</p>
               <p className="text-white/60 text-sm">Views</p>
             </div>
-          </div>
-
-          {/* Earnings Badge */}
-          <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#5F31E8] to-[#7C4DFF] rounded-full mb-4">
-            <TrendingUp className="w-4 h-4 text-white" />
-            <span className="text-white font-bold">{mockEarnings} MON</span>
-            <span className="text-white/80 text-sm">Earned</span>
           </div>
 
           {/* Create Subscription Button */}

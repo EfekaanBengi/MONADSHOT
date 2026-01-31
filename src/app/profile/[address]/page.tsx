@@ -48,8 +48,23 @@ export default function PublicProfilePage() {
     const [copied, setCopied] = useState(false);
     const [activeTab, setActiveTab] = useState<"public" | "exclusive">("public");
 
-    // Mock stats
-    const mockViews = 12500;
+    // Generate consistent random views based on wallet address
+    const generateViewsFromAddress = (addr: string): number => {
+        if (!addr) return Math.floor(Math.random() * 10000) + 1000;
+
+        // Simple hash function to convert wallet address to a seed
+        let hash = 0;
+        for (let i = 0; i < addr.length; i++) {
+            hash = ((hash << 5) - hash) + addr.charCodeAt(i);
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+
+        // Use hash to generate a consistent random number between 1000 and 50000
+        const absHash = Math.abs(hash);
+        return (absHash % 49000) + 1000;
+    };
+
+    const mockViews = generateViewsFromAddress(profileAddress);
 
     useEffect(() => {
         if (profileAddress) {
