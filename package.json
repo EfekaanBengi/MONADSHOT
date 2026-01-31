@@ -24,7 +24,7 @@
     "swiper": "^12.1.0",
     "tailwind-merge": "^3.4.0",
     "viem": "^2.45.1",
-    "wagmi": "^3.4.1"
+    "wagmi": "^2.19.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
