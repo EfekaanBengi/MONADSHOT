@@ -20,7 +20,7 @@ export const monadTestnet = defineChain({
 
 // Wagmi + RainbowKit Config
 export const config = getDefaultConfig({
-  appName: "MonadTok",
+  appName: "PULSE",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
   chains: [monadTestnet],
   ssr: true,

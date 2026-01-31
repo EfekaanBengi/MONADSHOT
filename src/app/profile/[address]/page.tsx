@@ -6,11 +6,34 @@ import { Wallet, Play, Lock, Copy, Check, TrendingUp } from "lucide-react";
 import { useAccount } from "wagmi";
 import { getVideosByCreator, getUser } from "@/lib/api";
 import type { Video, User } from "@/types/database";
+import { useMintSubscription } from "@/lib/contracts/hooks";
+import { parseEther } from "viem";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export default function PublicProfilePage() {
     const router = useRouter();
     const params = useParams();
     const { address: viewerAddress } = useAccount();
+    const { openConnectModal } = useConnectModal();
+    const { mint, isPending, isConfirming, isSuccess } = useMintSubscription();
+
+    const handleSubscribe = async () => {
+        if (!profileUser?.subscription_contract_address || !profileUser?.subscription_price) return;
+
+        if (!viewerAddress) {
+            openConnectModal?.();
+            return;
+        }
+
+        try {
+            await mint(
+                profileUser.subscription_contract_address as `0x${string}`,
+                parseEther(profileUser.subscription_price.toString())
+            );
+        } catch (e) {
+            console.error("Mint failed", e);
+        }
+    };
 
     // Safely get address from params
     const profileAddress = (typeof params?.address === 'string'
@@ -113,8 +136,21 @@ export default function PublicProfilePage() {
 
                             {/* Subscribe Button (if not me) */}
                             {viewerAddress?.toLowerCase() !== profileAddress && (
-                                <button className="w-full py-3 bg-[#5F31E8] hover:bg-[#7C4DFF] rounded-xl text-white font-bold transition-colors">
-                                    Subscribe to {profileUser.subscription_name || "Creator"}
+                                <button
+                                    onClick={handleSubscribe}
+                                    disabled={isPending || isConfirming || isSuccess}
+                                    className="w-full py-3 bg-[#5F31E8] hover:bg-[#7C4DFF] disabled:bg-[#5F31E8]/50 disabled:cursor-not-allowed rounded-xl text-white font-bold transition-colors"
+                                >
+                                    {isPending || isConfirming ? (
+                                        <div className="flex items-center justify-center gap-2">
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Reading...
+                                        </div>
+                                    ) : isSuccess ? (
+                                        "SUBSCRIBED"
+                                    ) : (
+                                        "SUBSCRIBE!"
+                                    )}
                                 </button>
                             )}
                         </div>

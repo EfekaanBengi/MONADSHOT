@@ -74,8 +74,14 @@ export default function VideoSlide({ video, isActive }: VideoSlideProps) {
     const canPlay = !video.is_exclusive || isUnlocked || amICreator;
 
     if (isActive && canPlay) {
-      videoRef.current.play().catch(() => {
-        // Autoplay blocked, user needs to interact
+      videoRef.current.play().catch((error) => {
+        // Autoplay blocked (likely due to audio) - fallback to muted
+        console.log("Autoplay blocked, falling back to muted:", error);
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          setIsMuted(true);
+          videoRef.current.play().catch(e => console.error("Muted autoplay failed:", e));
+        }
       });
       setIsPaused(false);
     } else {
@@ -84,7 +90,7 @@ export default function VideoSlide({ video, isActive }: VideoSlideProps) {
         videoRef.current.currentTime = 0;
       }
     }
-  }, [isActive, video.is_exclusive, isUnlocked]);
+  }, [isActive, video.is_exclusive, isUnlocked]); // Removed amICreator dependency as it breaks memoization? No, amICreator is computed inside.
 
   const handleVideoTap = (e: React.MouseEvent<HTMLVideoElement>) => {
     if (!videoRef.current) return;
@@ -175,7 +181,7 @@ export default function VideoSlide({ video, isActive }: VideoSlideProps) {
   const isExclusiveLocked = video.is_exclusive && !isUnlocked && !amICreator;
   const isProcessing = isSending || isConfirming;
 
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsMuted(!isMuted);

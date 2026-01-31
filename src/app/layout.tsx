@@ -15,13 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MonadTok",
+  title: "PULSE",
   description: "A TikTok-style video app on Monad",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "MonadTok",
+    title: "PULSE",
   },
 };
 

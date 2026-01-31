@@ -1,6 +1,6 @@
 {
-  "name": "MonadTok",
-  "short_name": "MonadTok",
+  "name": "PULSE",
+  "short_name": "PULSE",
   "description": "A TikTok-style video app on Monad",
   "start_url": "/",
   "display": "standalone",
